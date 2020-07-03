@@ -2,9 +2,18 @@
   "name": "thoughtdown",
   "version": "0.0.1",
   "description": "Transform throughts into HTML (powered by Markdown)",
-  "main": "index.js",
+  "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "plugins": [
+      "@babel/plugin-transform-modules-commonjs"
+    ]
   },
   "repository": {
     "type": "git",
@@ -22,5 +31,11 @@
   "bugs": {
     "url": "https://github.com/btalb/thoughtdown/issues"
   },
-  "homepage": "https://github.com/btalb/thoughtdown#readme"
+  "homepage": "https://github.com/btalb/thoughtdown#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.10.4",
+    "@babel/core": "^7.10.4",
+    "@babel/plugin-transform-modules-commonjs": "^7.10.4",
+    "@babel/preset-env": "^7.10.4"
+  }
 }
