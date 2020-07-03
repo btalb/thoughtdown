@@ -39,6 +39,8 @@
     "@babel/preset-env": "^7.10.4"
   },
   "dependencies": {
-    "markdown-it": "^11.0.0"
+    "d3": "^5.16.0",
+    "markdown-it": "^11.0.0",
+    "seedrandom": "^3.0.5"
   }
 }
