@@ -2,6 +2,7 @@
 
 import * as d3 from 'd3';
 import seedrandom from 'seedrandom';
+import yaml from 'yaml';
 
 const DEFAULT_CONFIG = {
   'show_ids': false,
@@ -89,8 +90,8 @@ function gitGraphLayout() {
           break;
         }
         gg.links = gg.links.concat(sources.map(d => ({
-          source: d,
-          target: gg.nodes.length - 1
+          source: gg.nodes[d],
+          target: gg.nodes[gg.nodes.length - 1]
         })));
       });
     });
@@ -99,7 +100,7 @@ function gitGraphLayout() {
   return layout;
 }
 
-export default function render(dataString, configString) {
+export default function generateHtml(dataString, configString) {
   // Convert the data to JSON, & fill in any missing settings with defaults
   let data = Object.assign({}, /graph/.test(dataString) ? yaml.parse(dataString) : {
     graph: dataString.trim()
@@ -113,14 +114,41 @@ export default function render(dataString, configString) {
   let gg = gitGraphLayout();
   let ggData = gg(data);
 
-  // Perform the visualisation, using the values in the layout
+  // Construct the visualisation, using the values in the layout
   const W = 960,
     H = 300;
   let x = d3.scaleLinear().domain([-0.5, 7.5]).range([0, W]);
   let y = d3.scaleLinear().domain([-0.5, 2.5]).range([H, 0]);
 
-  let svg = d3.select('#gitgraph').insert('svg').attr("width", W).attr("height", H);
+  let link = function(d) {
+    let p = d3.path();
+    p.moveTo(x(d.source.x), y(d.source.y));
+    let c = d.source.x;
+    let r = d.source.y;
+    while (c++ < d.target.x) {
+      if (r !== d.target.y) {
+        let dy = delta => d.target.y >= r ? delta : -1 * delta;
+        p.lineTo(x(c - 0.75), y(r));
+        p.quadraticCurveTo(x(c - 0.5), y(r), x(c - 0.5), y(r + dy(0.5)));
+        p.lineTo(x(c - 0.5), y(d.target.y - dy(0.5)));
+        p.quadraticCurveTo(x(c - 0.5), y(d.target.y), x(c - 0.25), y(d.target.y));
+        p.lineTo(x(c), y(d.target.y));
+        r = d.target.y;
+      } else {
+        p.lineTo(x(c), y(r));
+      }
+    }
+    return p.toString();
+  };
+
+  let container = d3.create('div');
+  let svg = container.insert('svg').attr("width", W).attr("height", H);
   svg.append('rect').attr("width", "100%").attr("height", "100%").attr("fill", "floralwhite");
 
+  svg.selectAll('path').data(ggData.links).enter().append('path').attr("fill", "none").attr("stroke", "coral").attr("stroke-width", "5").attr("d", link);
   svg.selectAll('circle').data(ggData.nodes).enter().append('circle').style("fill", "coral").attr("cx", d => x(d.x)).attr("cy", d => y(d.y)).attr("r", 20);
+  svg.selectAll('text').data(ggData.nodes).enter().append('text').attr("x", d => x(d.x)).attr("y", d => y(d.y + 0.25)).attr("text-anchor", "middle").attr("font-weight", "bold").attr("fill", "coral").text(d => d.hash);
+
+  // Return the HTML text
+  return container.node().innerHTML;
 }
