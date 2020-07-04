@@ -16,7 +16,7 @@ const DEFAULT_CONFIG = {
 
 function createHash(length = DEFAULT_CONFIG.hash_length, seed = null) {
   if (seed !== null) seedHash(seed);
-  return Math.floor(Math.random() * (16 ** length)).toString(16);
+  return Math.floor(16 ** (length - 1) + Math.random() * (16 ** length - 16 ** (length - 1))).toString(16);
 }
 
 function seedHash(seed) {
