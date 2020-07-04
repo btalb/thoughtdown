@@ -8,7 +8,7 @@ const DEFAULT_CONFIG = {
   'show_ids': false,
   'show_hashes': true,
   'hash_seed': null,
-  'hash_length': 6,
+  'hash_length': 7,
   'columns': 8,
   'column_width': 100,
   'row_height': 100
