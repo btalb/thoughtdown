@@ -42,7 +42,7 @@ function gitGraphLayout() {
     // - '\' means branch from the first named commit to the RIGHT
     // - '/' means merge into first named commit to the RIGHT
     // - '_' means is an explicit space for an empty column
-    if (data.config.hash_seed !== null) _seedHash(data.config.hash_seed);
+    if (data.config.hash_seed !== null) seedHash(data.config.hash_seed);
     let parsedGraph = data.graph.split('\n').map(d => d.trim().split(' '))
     parsedGraph.forEach(function(l, ln) {
       l.forEach(function(c, cn) {
