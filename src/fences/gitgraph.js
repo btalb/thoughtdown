@@ -5,8 +5,8 @@ import seedrandom from 'seedrandom';
 import yaml from 'yaml';
 
 const DEFAULT_CONFIG = {
-  'show_ids': false,
-  'show_hashes': true,
+  'show_name': false, // Shows name instead of the hashes
+  'show_hash': true,
   'hash_seed': null,
   'hash_length': 7,
   'columns': 8,
@@ -95,6 +95,7 @@ function gitGraphLayout() {
         })));
       });
     });
+    console.log(gg);
     return gg;
   }
   return layout;
@@ -147,7 +148,9 @@ export default function generateHtml(dataString, configString) {
 
   svg.selectAll('path').data(ggData.links).enter().append('path').attr("fill", "none").attr("stroke", "coral").attr("stroke-width", "5").attr("d", link);
   svg.selectAll('circle').data(ggData.nodes).enter().append('circle').style("fill", "coral").attr("cx", d => x(d.x)).attr("cy", d => y(d.y)).attr("r", 20);
-  svg.selectAll('text').data(ggData.nodes).enter().append('text').attr("x", d => x(d.x)).attr("y", d => y(d.y + 0.25)).attr("text-anchor", "middle").attr("font-weight", "bold").attr("fill", "coral").text(d => d.hash);
+  if (data.config.show_hash || data.config.show_name) {
+    svg.selectAll('text').data(ggData.nodes).enter().append('text').attr("x", d => x(d.x)).attr("y", d => y(d.y + 0.25)).attr("text-anchor", "middle").attr("font-weight", "bold").attr("fill", "coral").text(d => data.config.show_name ? d.name : d.hash);
+  }
 
   // Return the HTML text
   return container.node().innerHTML;
