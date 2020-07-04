@@ -1,6 +1,7 @@
 'use strict';
 
 import MarkdownIt from 'markdown-it';
+import Prism from 'prismjs';
 
 import gitgraph from './fences/gitgraph';
 
@@ -24,4 +25,8 @@ export default class ThoughtDown extends MarkdownIt {
     }
   }
 
+  highlight() {
+    // TODO this is hacky, & only works after a delay with 0 language support
+    Prism.highlightAll(false, (el) => console.log(el));
+  }
 }
