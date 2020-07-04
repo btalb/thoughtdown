@@ -81,7 +81,7 @@ function gitGraphLayout() {
             x = parsedGraph[i - 1][parsedGraph[i - 1].length - 1];
             sources.push(gg.nodes.findIndex(d => d.id === x));
             break;
-          } else if (x === '|') {
+          } else if (x === '|' || x === '/') {
             continue;
           } else if (/^[A-Za-z]+$/.test(x)) {
             sources.push(gg.nodes.findIndex(d => d.id === x));
