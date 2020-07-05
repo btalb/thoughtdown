@@ -13,10 +13,10 @@ const DEFAULT_CONFIG = {
   'min_columns': 8,
   'min_rows': 0,
 
-  'label_buffer': 80,
+  'label_buffer': 60,
   'label_height': 30,
-  'label_spacing': 50,
-  'label_width': 60,
+  'label_spacing': 100,
+  'label_width': 70,
 
   'width': 960,
   'height': 300,
@@ -121,16 +121,18 @@ function gitGraphLayout() {
     gg.labels = [];
     gg.nodes.forEach(function(n) {
       if (n.hasOwnProperty('labels')) {
-        let x = n.labels.length - 1;
-        x = d3.scaleLinear().domain([0, x]).range([-x / 2, x / 2]);
+        let L = n.labels.length - 1;
+        let D = data.config.label_spacing;
+        x = d3.scaleLinear().domain([0, L]).range([-L / 2 * D, L / 2 * D]);
         n.labels.forEach(function(l, i) {
           gg.labels.push({
             type: l.type ? l.type : 'plain',
             text: l.text,
-            x: n.x,
-            y: n.y,
+            ref_x: n.x,
+            ref_y: n.y,
+            dx: x(i),
+            dy: n.y === 0 ? data.config.label_buffer : -data.config.label_buffer,
             d: n.y === 0 ? -1 : 1,
-            i: i
           })
         });
       }
@@ -145,7 +147,7 @@ export default function generateHtml(dataString, configString) {
   let data = Object.assign({}, /graph/.test(dataString) ? yaml.parse(dataString) : {
     graph: dataString.trim()
   }, {
-    config: Object.assign({}, DEFAULT_CONFIG, (configString) ? yaml.parse(configString.replace(', ', '\n')) : {})
+    config: Object.assign({}, DEFAULT_CONFIG, (configString) ? yaml.parse(configString.replace(/, /g, '\n')) : {})
   });
   if (!data.hasOwnProperty('commits')) data.commits = {};
 
@@ -158,7 +160,7 @@ export default function generateHtml(dataString, configString) {
   let x = d3.scaleLinear().domain(getLimits(ggData.nodes, n => n.x)).range([data.config.margin_left, data.config.width - data.config.margin_right]);
   let y = d3.scaleLinear().domain(getLimits(ggData.nodes, n => n.y)).range([data.config.height - data.config.margin_bottom, data.config.margin_top]);
 
-  let link = function(d) {
+  let graphLink = function(d) {
     let p = d3.path();
     p.moveTo(x(d.source.x), y(d.source.y));
     let c = d.source.x;
@@ -179,13 +181,13 @@ export default function generateHtml(dataString, configString) {
     return p.toString();
   };
 
-  let label = function(l, h) {
+  let label = function(l) {
     let p = d3.path();
     p.moveTo(0, 0);
-    p.lineTo(x(0.25), 0);
-    p.lineTo(x(0.25), -h * l.d);
-    p.lineTo(-x(0.25), -h * l.d);
-    p.lineTo(-x(0.25), 0);
+    p.lineTo(data.config.label_width / 2, 0);
+    p.lineTo(data.config.label_width / 2, -data.config.label_height * l.d);
+    p.lineTo(-data.config.label_width / 2, -data.config.label_height * l.d);
+    p.lineTo(-data.config.label_width / 2, 0);
     p.closePath();
     return p.toString();
   }
@@ -194,16 +196,16 @@ export default function generateHtml(dataString, configString) {
   let svg = container.insert('svg').attr("width", data.config.width).attr("height", data.config.height);
   svg.append('rect').attr("width", "100%").attr("height", "100%").attr("fill", "floralwhite");
 
-  svg.selectAll('gitgraph-link').data(ggData.links).enter().append('path').classed('gitgraph-link', true).attr("fill", "none").attr("stroke", "coral").attr("stroke-width", "5").attr("d", link);
+  svg.selectAll('gitgraph-link').data(ggData.links).enter().append('path').classed('gitgraph-link', true).attr("fill", "none").attr("stroke", "coral").attr("stroke-width", "5").attr("d", graphLink);
   svg.selectAll('gitgraph-node').data(ggData.nodes).enter().append('circle').classed('gitgraph-node', true).style("fill", "coral").attr("cx", d => x(d.x)).attr("cy", d => y(d.y)).attr("r", 20);
   if (data.config.show_hash || data.config.show_name) {
     svg.selectAll('gitgraph-node-label').data(ggData.nodes).enter().append('text').classed('gitgraph-node-label', true).attr("x", d => x(d.x)).attr("y", d => y(d.y + 0.25)).attr("text-anchor", "middle").attr("font-weight", "bold").attr("fill", "coral").text(d => data.config.show_name ? d.name : d.hash);
   }
   if (ggData.labels && ggData.labels.length) {
-    let gs = svg.selectAll('gitgraph-label').data(ggData.labels).enter().append('g').classed('gitgraph-label', true).attr("transform", d => "translate(" + x(d.x) + "," + y(d.y) + ")");
-    gs.append('circle').style("fill", "black").attr("r", 5);
+    console.log(ggData);
+    let gs = svg.selectAll('gitgraph-label').data(ggData.labels).enter().append('g').classed('gitgraph-label', true).attr("transform", d => "translate(" + (x(d.ref_x) + d.dx) + "," + (y(d.ref_y) + d.dy) + ")");
     gs.append('path').attr("fill", "none").attr("stroke", "black").attr("stroke-width", "1").attr("d", d => label(d, data.config.label_height));
-    gs.append('text').text(d => d.text);
+    gs.append('text').text(d => d.text).attr("text-anchor", "middle").attr("dominant-baseline", "middle").attr("y", d => -d.d * data.config.label_height / 2);
   }
 
   // Return the HTML text
