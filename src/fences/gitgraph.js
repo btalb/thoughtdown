@@ -230,7 +230,7 @@ export default function generateHtml(dataString, configString) {
   }
 
   let container = d3.create('div');
-  let svg = container.insert('svg').attr("width", data.config.width).attr("height", data.config.height);
+  let svg = container.insert('svg').attr("width", data.config.width).attr("height", data.config.height).attr("font-family", "monospace");
   svg.append('rect').attr("width", "100%").attr("height", "100%").attr("fill", "floralwhite");
 
   svg.append('svg:defs').append('svg:marker').attr('id', 'arrow').attr('markerHeight', 8).attr('markerWidth', 8).attr('markerUnits', 'strokeWidth').attr('orient', 'auto').attr('refX', 0).attr('refY', 0).attr('viewBox', '-5 -5 10 10').append('svg:path').attr('d', 'M 0,0 m -5,-5 L 5,0 L -5,5 Z').attr('fill', 'black');
