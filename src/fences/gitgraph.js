@@ -9,9 +9,9 @@ const DEFAULT_CONFIG = {
   'show_hash': true,
   'hash_seed': null,
   'hash_length': 7,
-  'columns': 8,
-  'column_width': 100,
-  'row_height': 100
+
+  'min_columns': 8,
+  'min_rows': 0
 }
 
 function createHash(length = DEFAULT_CONFIG.hash_length, seed = null) {
@@ -23,6 +23,12 @@ function seedHash(seed) {
   seedrandom(seed, {
     global: true
   });
+}
+
+function getLimits(data, accessor, min_max = 0) {
+  let e = d3.extent(data, accessor);
+  if (e[1] < min_max - 1) e[1] = min_max - 1;
+  return [-0.5, 0.5].map((x, i) => x + e[i]);
 }
 
 function gitGraphLayout() {
@@ -95,7 +101,17 @@ function gitGraphLayout() {
         })));
       });
     });
-    console.log(gg);
+
+    // Populate layout data for labels
+    // gg.labels = [];
+    // gg.nodes.forEach(function (n) {
+    //   if (n.hasOwnProperty('labels')) {
+    //     n.labels.forEach(function (l) {
+    //       gg.labels.push({
+    //       });
+    //     });
+    //   }
+    // });
     return gg;
   }
   return layout;
@@ -118,8 +134,8 @@ export default function generateHtml(dataString, configString) {
   // Construct the visualisation, using the values in the layout
   const W = 960,
     H = 300;
-  let x = d3.scaleLinear().domain([-0.5, 7.5]).range([0, W]);
-  let y = d3.scaleLinear().domain([-0.5, 2.5]).range([H, 0]);
+  let x = d3.scaleLinear().domain(getLimits(ggData.nodes, n => n.x, data.config.min_columns)).range([0, W]);
+  let y = d3.scaleLinear().domain(getLimits(ggData.nodes, n => n.y, data.config.min_rows)).range([H, 0]);
 
   let link = function(d) {
     let p = d3.path();
