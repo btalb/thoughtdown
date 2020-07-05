@@ -184,12 +184,34 @@ export default function generateHtml(dataString, configString) {
   };
 
   let label = function(l) {
-    let p = d3.path();
+    let p = d3.path(),
+      w = data.config.label_width,
+      h = data.config.label_height,
+      o = 10;
     p.moveTo(0, 0);
-    p.lineTo(data.config.label_width / 2, 0);
-    p.lineTo(data.config.label_width / 2, -data.config.label_height * l.d);
-    p.lineTo(-data.config.label_width / 2, -data.config.label_height * l.d);
-    p.lineTo(-data.config.label_width / 2, 0);
+    switch (l.type) {
+      case 'branch':
+        p.lineTo(w / 2, 0);
+        p.lineTo(w / 2, -h * l.d);
+        p.lineTo(-w / 2, -h * l.d);
+        p.lineTo(-w / 2, 0);
+        break;
+      case 'head':
+        p.lineTo(w / 2 - o, 0);
+        p.lineTo(w / 2, -h / 2 * l.d);
+        p.lineTo(w / 2 - o, -h * l.d);
+        p.lineTo(-w / 2 + o, -h * l.d);
+        p.lineTo(-w / 2, -h / 2 * l.d);
+        p.lineTo(-w / 2 + o, 0);
+        break;
+      default:
+        let flip = l.dy > 0;
+        p.lineTo(w / 2 - (flip ? 0 : o), 0);
+        p.lineTo(w / 2 - (flip ? o : 0), -h * l.d);
+        p.lineTo(-w / 2 + (flip ? 0 : o), -h * l.d);
+        p.lineTo(-w / 2 + (flip ? o : 0), 0);
+        break;
+    }
     p.closePath();
     return p.toString();
   }
@@ -221,7 +243,7 @@ export default function generateHtml(dataString, configString) {
   if (ggData.labels && ggData.labels.length) {
     let gs = svg.selectAll('gitgraph-label').data(ggData.labels).enter().append('g').classed('gitgraph-label', true).attr("transform", d => "translate(" + (x(d.ref_x) + d.dx) + "," + (y(d.ref_y) + d.dy) + ")");
     gs.append('path').attr("fill", "none").attr("stroke", "black").attr("stroke-linecap", "round").attr("d", labelLink).attr('marker-end', 'url(#arrow)');
-    gs.append('path').attr("fill", "none").attr("stroke", "black").attr("stroke-width", "1").attr("d", d => label(d, data.config.label_height));
+    gs.filter(d => d.type !== 'plain').append('path').attr("fill", "none").attr("stroke", "black").attr("stroke-width", "1").attr("d", label);
     gs.append('text').text(d => d.text).attr("text-anchor", "middle").attr("dominant-baseline", "middle").attr("y", d => -d.d * data.config.label_height / 2);
   }
 
