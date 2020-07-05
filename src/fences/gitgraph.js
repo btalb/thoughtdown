@@ -85,6 +85,7 @@ function gitGraphLayout() {
           name: c,
           hash: createHash(data.config.hash_length),
           head: false,
+          color: data.config.color_graph,
           x: gg.nodes.length,
           y: cn
         }, data.commits.hasOwnProperty(c) ? data.commits[c] : {}));
@@ -148,6 +149,10 @@ function gitGraphLayout() {
         });
       }
     });
+    gg.links.sort(function(a, b) {
+      return a.source.y < b.source.y || a.target.y < b.target.y ? 1 : -1;
+    });
+    console.log(gg);
     return gg;
   }
   return layout;
@@ -191,6 +196,10 @@ export default function generateHtml(dataString, configString) {
     }
     return p.toString();
   };
+
+  let graphLinkColor = function(d) {
+    return d.source.y > d.target.y ? d.source.color : d.target.color;
+  }
 
   let label = function(l) {
     let p = d3.path(),
@@ -244,10 +253,10 @@ export default function generateHtml(dataString, configString) {
 
   svg.append('svg:defs').append('svg:marker').attr('id', 'arrow').attr('markerHeight', 8).attr('markerWidth', 8).attr('markerUnits', 'strokeWidth').attr('orient', 'auto').attr('refX', 0).attr('refY', 0).attr('viewBox', '-5 -5 10 10').append('svg:path').attr('d', 'M 0,0 m -5,-5 L 5,0 L -5,5 Z').attr('fill', 'black');
 
-  svg.selectAll('gitgraph-link').data(ggData.links).enter().append('path').classed('gitgraph-link', true).attr("fill", "none").attr("stroke", data.config.color_graph).attr("stroke-width", "5").attr("d", graphLink);
-  svg.selectAll('gitgraph-node').data(ggData.nodes).enter().append('circle').classed('gitgraph-node', true).style("fill", d => (data.config.show_head && d.head) ? "none" : data.config.color_graph).attr("stroke", data.config.color_graph).attr("stroke-width", 5).attr("cx", d => x(d.x)).attr("cy", d => y(d.y)).attr("r", data.config.node_radius);
+  svg.selectAll('gitgraph-link').data(ggData.links).enter().append('path').classed('gitgraph-link', true).attr("fill", "none").attr("stroke", graphLinkColor).attr("stroke-width", "5").attr("d", graphLink);
+  svg.selectAll('gitgraph-node').data(ggData.nodes).enter().append('circle').classed('gitgraph-node', true).attr("fill", d => (data.config.show_head && d.head) ? "none" : d.color).attr("stroke", d => d.color).attr("stroke-width", 5).attr("cx", d => x(d.x)).attr("cy", d => y(d.y)).attr("r", data.config.node_radius);
   if (data.config.show_hash || data.config.show_name) {
-    svg.selectAll('gitgraph-node-label').data(ggData.nodes).enter().append('text').classed('gitgraph-node-label', true).attr("x", d => x(d.x)).attr("y", d => y(d.y) - 1.25 * data.config.node_radius).attr("text-anchor", "middle").attr("font-weight", "bold").attr("fill", data.config.color_graph).text(d => data.config.show_name ? d.name : d.hash);
+    svg.selectAll('gitgraph-node-label').data(ggData.nodes).enter().append('text').classed('gitgraph-node-label', true).attr("x", d => x(d.x)).attr("y", d => y(d.y) - 1.25 * data.config.node_radius).attr("text-anchor", "middle").attr("font-weight", "bold").attr("fill", d => d.color).text(d => data.config.show_name ? d.name : d.hash);
   }
   if (ggData.labels && ggData.labels.length) {
     let gs = svg.selectAll('gitgraph-label').data(ggData.labels).enter().append('g').classed('gitgraph-label', true).attr("transform", d => "translate(" + (x(d.ref_x) + d.dx) + "," + (y(d.ref_y) + d.dy) + ")");
