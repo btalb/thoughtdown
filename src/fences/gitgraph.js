@@ -11,7 +11,20 @@ const DEFAULT_CONFIG = {
   'hash_length': 7,
 
   'min_columns': 8,
-  'min_rows': 0
+  'min_rows': 0,
+
+  'label_buffer': 80,
+  'label_height': 30,
+  'label_spacing': 50,
+  'label_width': 60,
+
+  'width': 960,
+  'height': 300,
+
+  'margin_left': 0,
+  'margin_right': 0,
+  'margin_top': 0,
+  'margin_bottom': 0
 }
 
 function createHash(length = DEFAULT_CONFIG.hash_length, seed = null) {
@@ -25,10 +38,11 @@ function seedHash(seed) {
   });
 }
 
-function getLimits(data, accessor, min_max = 0) {
-  let e = d3.extent(data, accessor);
-  if (e[1] < min_max - 1) e[1] = min_max - 1;
-  return [-0.5, 0.5].map((x, i) => x + e[i]);
+function getLimits(nodes, nodes_accessor, min_max = 0) {
+  // Calculate graph based limits
+  let ls = d3.extent(nodes, nodes_accessor);
+  if (ls[1] < min_max - 1) ls[1] = min_max - 1;
+  return [-0.5, 0.5].map((x, i) => x + ls[i]);
 }
 
 function gitGraphLayout() {
@@ -103,15 +117,24 @@ function gitGraphLayout() {
     });
 
     // Populate layout data for labels
-    // gg.labels = [];
-    // gg.nodes.forEach(function (n) {
-    //   if (n.hasOwnProperty('labels')) {
-    //     n.labels.forEach(function (l) {
-    //       gg.labels.push({
-    //       });
-    //     });
-    //   }
-    // });
+    let rowLimits = d3.extent(gg.nodes, n => n.y);
+    gg.labels = [];
+    gg.nodes.forEach(function(n) {
+      if (n.hasOwnProperty('labels')) {
+        let x = n.labels.length - 1;
+        x = d3.scaleLinear().domain([0, x]).range([-x / 2, x / 2]);
+        n.labels.forEach(function(l, i) {
+          gg.labels.push({
+            type: l.type ? l.type : 'plain',
+            text: l.text,
+            x: n.x,
+            y: n.y,
+            d: n.y === 0 ? -1 : 1,
+            i: i
+          })
+        });
+      }
+    });
     return gg;
   }
   return layout;
@@ -132,10 +155,8 @@ export default function generateHtml(dataString, configString) {
   let ggData = gg(data);
 
   // Construct the visualisation, using the values in the layout
-  const W = 960,
-    H = 300;
-  let x = d3.scaleLinear().domain(getLimits(ggData.nodes, n => n.x, data.config.min_columns)).range([0, W]);
-  let y = d3.scaleLinear().domain(getLimits(ggData.nodes, n => n.y, data.config.min_rows)).range([H, 0]);
+  let x = d3.scaleLinear().domain(getLimits(ggData.nodes, n => n.x)).range([data.config.margin_left, data.config.width - data.config.margin_right]);
+  let y = d3.scaleLinear().domain(getLimits(ggData.nodes, n => n.y)).range([data.config.height - data.config.margin_bottom, data.config.margin_top]);
 
   let link = function(d) {
     let p = d3.path();
@@ -158,14 +179,31 @@ export default function generateHtml(dataString, configString) {
     return p.toString();
   };
 
+  let label = function(l, h) {
+    let p = d3.path();
+    p.moveTo(0, 0);
+    p.lineTo(x(0.25), 0);
+    p.lineTo(x(0.25), -h * l.d);
+    p.lineTo(-x(0.25), -h * l.d);
+    p.lineTo(-x(0.25), 0);
+    p.closePath();
+    return p.toString();
+  }
+
   let container = d3.create('div');
-  let svg = container.insert('svg').attr("width", W).attr("height", H);
+  let svg = container.insert('svg').attr("width", data.config.width).attr("height", data.config.height);
   svg.append('rect').attr("width", "100%").attr("height", "100%").attr("fill", "floralwhite");
 
-  svg.selectAll('path').data(ggData.links).enter().append('path').attr("fill", "none").attr("stroke", "coral").attr("stroke-width", "5").attr("d", link);
-  svg.selectAll('circle').data(ggData.nodes).enter().append('circle').style("fill", "coral").attr("cx", d => x(d.x)).attr("cy", d => y(d.y)).attr("r", 20);
+  svg.selectAll('gitgraph-link').data(ggData.links).enter().append('path').classed('gitgraph-link', true).attr("fill", "none").attr("stroke", "coral").attr("stroke-width", "5").attr("d", link);
+  svg.selectAll('gitgraph-node').data(ggData.nodes).enter().append('circle').classed('gitgraph-node', true).style("fill", "coral").attr("cx", d => x(d.x)).attr("cy", d => y(d.y)).attr("r", 20);
   if (data.config.show_hash || data.config.show_name) {
-    svg.selectAll('text').data(ggData.nodes).enter().append('text').attr("x", d => x(d.x)).attr("y", d => y(d.y + 0.25)).attr("text-anchor", "middle").attr("font-weight", "bold").attr("fill", "coral").text(d => data.config.show_name ? d.name : d.hash);
+    svg.selectAll('gitgraph-node-label').data(ggData.nodes).enter().append('text').classed('gitgraph-node-label', true).attr("x", d => x(d.x)).attr("y", d => y(d.y + 0.25)).attr("text-anchor", "middle").attr("font-weight", "bold").attr("fill", "coral").text(d => data.config.show_name ? d.name : d.hash);
+  }
+  if (ggData.labels && ggData.labels.length) {
+    let gs = svg.selectAll('gitgraph-label').data(ggData.labels).enter().append('g').classed('gitgraph-label', true).attr("transform", d => "translate(" + x(d.x) + "," + y(d.y) + ")");
+    gs.append('circle').style("fill", "black").attr("r", 5);
+    gs.append('path').attr("fill", "none").attr("stroke", "black").attr("stroke-width", "1").attr("d", d => label(d, data.config.label_height));
+    gs.append('text').text(d => d.text);
   }
 
   // Return the HTML text
