@@ -12,7 +12,7 @@ const DEFAULT_CONFIG = {
   'hash_seed': null,
   'hash_length': 7,
 
-  'min_columns': 8,
+  'min_columns': 0,
   'min_rows': 0,
 
   'label_buffer': 60,
@@ -51,6 +51,7 @@ function seedHash(seed) {
 }
 
 function getLimits(nodes, nodes_accessor, min_max = 0) {
+  console.log(min_max);
   // Calculate graph based limits
   let ls = d3.extent(nodes, nodes_accessor);
   if (ls[1] < min_max - 1) ls[1] = min_max - 1;
@@ -175,8 +176,8 @@ export default function generateHtml(dataString, configString) {
   let ggData = gg(data);
 
   // Construct the visualisation, using the values in the layout
-  let x = d3.scaleLinear().domain(getLimits(ggData.nodes, n => n.x)).range([data.config.margin_left, data.config.width - data.config.margin_right]);
-  let y = d3.scaleLinear().domain(getLimits(ggData.nodes, n => n.y)).range([data.config.height - data.config.margin_bottom, data.config.margin_top]);
+  let x = d3.scaleLinear().domain(getLimits(ggData.nodes, n => n.x, data.config.min_columns)).range([data.config.margin_left, data.config.width - data.config.margin_right]);
+  let y = d3.scaleLinear().domain(getLimits(ggData.nodes, n => n.y, data.config.min_rows)).range([data.config.height - data.config.margin_bottom, data.config.margin_top]);
 
   let graphLink = function(d) {
     let p = d3.path();
