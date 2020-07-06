@@ -148,6 +148,7 @@ function gitGraphLayout() {
             dx: x(i),
             dy: n.y === 0 ? data.config.label_buffer : -data.config.label_buffer,
             d: n.y === 0 ? -1 : 1,
+            width: l.width ? l.width : data.config.label_width
           })
         });
       }
@@ -206,7 +207,7 @@ export default function generateHtml(dataString, configString) {
 
   let label = function(l) {
     let p = d3.path(),
-      w = data.config.label_width,
+      w = l.width,
       h = data.config.label_height,
       o = 10;
     p.moveTo(0, 0);
