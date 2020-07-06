@@ -17,8 +17,8 @@ const DEFAULT_CONFIG = {
 
   'label_buffer': 60,
   'label_height': 30,
-  'label_spacing': 100,
-  'label_width': 70,
+  'label_spacing': 120,
+  'label_width': 90,
 
   'width': 960,
   'height': 300,
@@ -244,7 +244,7 @@ export default function generateHtml(dataString, configString) {
     } else {
       let side = l.dx > 0 ? -1 : 1;
       p.moveTo(0, 0);
-      p.quadraticCurveTo(0, -l.dy / 2, -l.dx - side * data.config.node_radius, -l.dy - l.d * data.config.node_radius);
+      p.quadraticCurveTo(0, -l.dy / 2, -l.dx - side * data.config.node_radius * 1.25, -l.dy - l.d * data.config.node_radius / 2);
     }
     return p.toString();
   }
