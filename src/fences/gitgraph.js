@@ -141,7 +141,7 @@ function gitGraphLayout() {
       if (n.hasOwnProperty('labels')) {
         let L = n.labels.length > 1 ? n.labels.length - 1 : 1;
         let D = data.config.label_spacing;
-        x = d3.scaleLinear().domain([0, L]).range([-L / 2 * D, L / 2 * D]);
+        let x = d3.scaleLinear().domain([0, L]).range([-L / 2 * D, L / 2 * D]);
         n.labels.forEach(function(l, i) {
           gg.labels.push({
             type: l.type ? l.type : 'plain',
