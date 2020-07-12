@@ -1,19 +1,17 @@
 {
   "name": "thoughtdown",
   "version": "0.1.0",
-  "description": "Transform throughts into HTML (powered by Markdown)",
-  "main": "src/index.js",
+  "description": "Transform thoughts into HTML (powered by Markdown)",
   "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "main": "./dist/index.cjs",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
   },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ],
-    "plugins": [
-      "@babel/plugin-transform-modules-commonjs"
-    ]
+  "scripts": {
+    "build": "rollup --config",
+    "start": "npm run build && nodemon dist/index.cjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -35,8 +33,10 @@
   "devDependencies": {
     "@babel/cli": "^7.10.4",
     "@babel/core": "^7.10.4",
-    "@babel/plugin-transform-modules-commonjs": "^7.10.4",
-    "@babel/preset-env": "^7.10.4"
+    "@babel/preset-env": "^7.10.4",
+    "@rollup/plugin-babel": "^5.0.4",
+    "nodemon": "^2.0.4",
+    "rollup": "^2.21.0"
   },
   "dependencies": {
     "d3": "^5.16.0",
