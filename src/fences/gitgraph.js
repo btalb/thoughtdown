@@ -1,6 +1,9 @@
 'use strict';
 
 import * as d3 from 'd3';
+import {
+  JSDOM
+} from 'jsdom';
 import seedrandom from 'seedrandom';
 import yaml from 'yaml';
 
@@ -162,6 +165,8 @@ function gitGraphLayout() {
   return layout;
 }
 
+const _DOM = new JSDOM(`<!DOCTYPE html><head></head><body></body`).window.document;
+
 export default function generateHtml(dataString, configString) {
   // Convert the data to JSON, & fill in any missing settings with defaults
   let data = Object.assign({}, /graph/.test(dataString) ? yaml.parse(dataString) : {
@@ -251,8 +256,9 @@ export default function generateHtml(dataString, configString) {
     return p.toString();
   }
 
-  let container = d3.create('div');
-  let svg = container.insert('svg').attr("width", data.config.width).attr("height", data.config.height).attr("font-family", "monospace").attr("font-size", data.config.font_size);
+  let container = _DOM.querySelector('body');
+  container.innerHTML = "";
+  let svg = d3.select(container).insert('svg').attr("width", data.config.width).attr("height", data.config.height).attr("font-family", "monospace").attr("font-size", data.config.font_size);
   svg.append('rect').attr("width", "100%").attr("height", "100%").attr("fill", data.config.color_background);
 
   svg.append('svg:defs').append('svg:marker').attr('id', 'arrow').attr('markerHeight', 8).attr('markerWidth', 8).attr('markerUnits', 'strokeWidth').attr('orient', 'auto').attr('refX', 0).attr('refY', 0).attr('viewBox', '-5 -5 10 10').append('svg:path').attr('d', 'M 0,0 m -5,-5 L 5,0 L -5,5 Z').attr('fill', 'black');
@@ -270,5 +276,5 @@ export default function generateHtml(dataString, configString) {
   }
 
   // Return the HTML text
-  return container.node().innerHTML;
+  return container.innerHTML;
 }
