@@ -8,8 +8,10 @@ export default {
     file: './dist/index.cjs',
     format: 'cjs',
   },
-  plugins: [babel({
-    babelHelpers: 'bundled'
-  })],
-  external: Object.keys(p.dependencies || {})
-}
+  plugins: [
+    babel({
+      babelHelpers: 'bundled',
+    }),
+  ],
+  external: Object.keys(p.dependencies || {}),
+};

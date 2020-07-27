@@ -8,7 +8,7 @@ Currently powered by [markdown-it](https://github.com/markdown-it/markdown-it) f
 
 ### General:
 
-- Support both ESM6 & AMD modules (i.e. import & require)
+- Create testing procedure which doubles as a website with examples of each feature
 
 ### Syntax highlighting:
 
