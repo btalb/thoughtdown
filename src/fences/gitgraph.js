@@ -1,9 +1,9 @@
 'use strict';
 
 import * as d3 from 'd3';
-import {JSDOM} from 'jsdom';
 import seedrandom from 'seedrandom';
-import yaml from 'yaml';
+
+import * as helpers from './helpers';
 
 const DEFAULT_CONFIG = {
   show_head: true,
@@ -177,25 +177,13 @@ function gitGraphLayout() {
   return layout;
 }
 
-const _DOM = new JSDOM(`<!DOCTYPE html><head></head><body></body`).window
-  .document;
-
+const _DOM = helpers.createDummyDom();
 export default function generateHtml(dataString, configString) {
   // Convert the data to JSON, & fill in any missing settings with defaults
-  let data = Object.assign(
-    {},
-    /graph/.test(dataString)
-      ? yaml.parse(dataString)
-      : {
-          graph: dataString.trim(),
-        },
-    {
-      config: Object.assign(
-        {},
-        DEFAULT_CONFIG,
-        configString ? yaml.parse(configString.replace(/, /g, '\n')) : {}
-      ),
-    }
+  let data = helpers.constructDataJson(
+    dataString,
+    configString,
+    DEFAULT_CONFIG
   );
   if (!data.hasOwnProperty('commits')) data.commits = {};
 
