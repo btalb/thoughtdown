@@ -5,8 +5,19 @@ import md from 'markdown-it';
 import gitgraph from './fences/gitgraph';
 import systemdiagram from './fences/systemdiagram';
 
+import l from './languages/terminal';
+
 export default function thoughtdown(options) {
-  const r = md(options).use(require('markdown-it-highlightjs'));
+  const r = md(options).use(require('markdown-it-highlightjs'), {
+    register: {terminal: l},
+  });
+
+  r.renderer.rules_default = Object.assign({}, r.renderer.rules);
+  r.renderer.rules.fence = function(tokens, idx, options, env, renderer) {
+    // TODO logic handling custom fences...
+    return renderer.rules_default.fence(tokens, idx, options, env, renderer);
+  };
+
   return r;
 }
 
