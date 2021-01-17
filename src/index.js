@@ -36,7 +36,7 @@ export default function thoughtdown(options) {
     // Give fence options a chance to modify the output before returning
     Object.entries(opts).forEach(([ok, ov]) => {
       Object.entries(fenceOptions).forEach(([k, v]) => {
-        if (k === ok) out = v(out, ov);
+        if (k === ok) out = v(out, ok, ov);
       });
     });
     return out;

@@ -1,4 +1,6 @@
-import buttons from './buttons';
+import {button, label} from './header';
 export default {
-  buttons: buttons,
+  button: button,
+  filename: label,
+  label: label,
 };

@@ -1,8 +1,8 @@
-```
+```{filename: /etc/default/grub}
 x = 4
 ```
 
-```terminal {buttons: copy}
+```terminal {button: copy-commands, label: Linux Terminal}
 $ sudo apt install ubuntu-drivers
 ...
 ```
