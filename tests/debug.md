@@ -1,12 +1,8 @@
-```{filename: /etc/default/grub}
-x = 4
-```
-
-```terminal {button: copy-commands, label: Linux Terminal}
-$ sudo apt install ubuntu-drivers
+```terminal
+u@pc:~$ sudo apt install nvidia-prime && \
+apt install vim
 ...
-```
-
-```gitgraph{arg1: a, arg2: b}
-
+some text
+...
+u@pc:~$ sudo apt install vim
 ```
