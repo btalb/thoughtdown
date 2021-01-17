@@ -4,5 +4,5 @@ apt install vim
 ...
 some text
 ...
-u@pc:~$ sudo apt install vim
+ben@ben-precision-3630:~/repos/my_repo$ sudo apt install vim
 ```
