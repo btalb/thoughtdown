@@ -4,6 +4,7 @@ export default function terminal(hljs) {
     aliases: ['term'],
     classNameAliases: {
       ps1: 'title',
+      spacing: 'comment',
     },
     contains: [
       {
