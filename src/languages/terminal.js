@@ -2,6 +2,9 @@ export default function terminal(hljs) {
   return {
     name: 'Linux Terminal',
     aliases: ['term'],
+    classNameAliases: {
+      ps1: 'title',
+    },
     contains: [
       {
         className: 'spacing',
@@ -31,7 +34,7 @@ export default function terminal(hljs) {
           },
           {
             className: 'ps1-end',
-            match: /[$]/,
+            match: /[$\s]*/,
             endsParent: true,
           },
         ],
