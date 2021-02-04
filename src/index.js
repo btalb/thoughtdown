@@ -18,7 +18,12 @@ export default function thoughtdown(options) {
   });
 
   r.renderer.rules_default = Object.assign({}, r.renderer.rules);
-  r.renderer.rules.fence = function(tokens, idx, options, env, renderer) {
+  r.renderer.rules.code_inline = function(tokens, idx, options, env, slf) {
+    return slf.rules_default
+        .code_inline(tokens, idx, options, env, slf)
+        .replace(/^<code/, '<code class="hljs hljs-inline language-none"');
+  };
+  r.renderer.rules.fence = function(tokens, idx, options, env, slf) {
     // Get output for our fence (first check if there's a custom fence,
     // otherwise defer to the default markdown-it rendering process)
     const opts = extractFenceOptions(tokens[idx].info);
@@ -30,7 +35,7 @@ export default function thoughtdown(options) {
       }
     });
     if (typeof out === 'undefined') {
-      out = renderer.rules_default.fence(tokens, idx, options, env, renderer);
+      out = slf.rules_default.fence(tokens, idx, options, env, slf);
     }
 
     // Give fence options a chance to modify the output before returning
