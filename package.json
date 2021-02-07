@@ -1,9 +1,10 @@
 {
   "name": "thoughtdown",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Transform thoughts into HTML (powered by Markdown)",
   "type": "module",
   "main": "./dist/index.cjs",
+  "private": true,
   "exports": {
     "import": "./dist/index.js",
     "require": "./dist/index.cjs"
