@@ -18,3 +18,4 @@ const out = `<body>${renderer.render(input)}</body>`;
 
 console.log(`INPUT MARKDOWN\n\n${input}`);
 console.log(`RENDERED MARKDOWN:\n\n${prettier.format(out)}`);
+// console.log(`RENDERED MARKDOWN:\n\n${out}`);

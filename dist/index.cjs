@@ -78,11 +78,11 @@ var HEADER_CLASS = 'td-header';
 var HEADER_OPEN = "<div class=\"".concat(HEADER_CLASS, "\">");
 var HEADER_CLOSE = '</div>';
 var REGEX_BEGIN = new RegExp("(".concat(HEADER_OPEN, ")"));
-var REGEX_END = new RegExp("(".concat(HEADER_OPEN, ".*?)(").concat(HEADER_CLOSE, "<pre>)"));
+var REGEX_END = new RegExp("(".concat(HEADER_OPEN, ".*?)(").concat(HEADER_CLOSE, "<code)"));
 var BUTTON_TEXT = {};
 
 function addHeader(output) {
-  return output.includes(HEADER_OPEN) ? output : "".concat(HEADER_OPEN).concat(HEADER_CLOSE).concat(output);
+  return output.includes(HEADER_OPEN) ? output : output.replace(/^(<pre>)/, "$1".concat(HEADER_OPEN).concat(HEADER_CLOSE));
 }
 
 function addHeaderContent(output, content) {
