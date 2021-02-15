@@ -1,4 +1,4 @@
-```terminal
+```term {button: copy}
 u@pc:~$ sudo apt install nvidia-prime && \
 apt install vim
 ...

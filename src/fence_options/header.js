@@ -3,14 +3,14 @@ const HEADER_OPEN = `<div class="${HEADER_CLASS}">`;
 const HEADER_CLOSE = '</div>';
 
 const REGEX_BEGIN = new RegExp(`(${HEADER_OPEN})`);
-const REGEX_END = new RegExp(`(${HEADER_OPEN}.*?)(${HEADER_CLOSE}<pre>)`);
+const REGEX_END = new RegExp(`(${HEADER_OPEN}.*?)(${HEADER_CLOSE}<code)`);
 
 const BUTTON_TEXT = {};
 
 function addHeader(output) {
   return output.includes(HEADER_OPEN) ?
     output :
-    `${HEADER_OPEN}${HEADER_CLOSE}${output}`;
+    output.replace(/^(<pre>)/, `$1${HEADER_OPEN}${HEADER_CLOSE}`);
 }
 
 function addHeaderContent(output, content, begin = true) {
