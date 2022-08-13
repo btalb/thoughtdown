@@ -2,12 +2,12 @@
   "name": "thoughtdown",
   "version": "0.2.1",
   "description": "Transform thoughts into HTML (powered by Markdown)",
-  "main": "./dist/index.js",
+  "main": "./dist/bundle.js",
   "private": true,
   "scripts": {
-    "build": "rollup --config",
+    "build": "webpack",
     "format": "prettier --write . && eslint --fix .",
-    "start": "rollup --config --watch",
+    "start": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -31,7 +31,11 @@
     "@babel/cli": "^7.18.10",
     "@babel/core": "^7.18.10",
     "@babel/preset-env": "^7.18.10",
+    "@types/node": "^18.6.5",
     "nodemon": "^2.0.19",
+    "ts-loader": "^9.3.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0"
   },
