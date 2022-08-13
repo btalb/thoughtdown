@@ -1,4 +1,6 @@
-export default function terminal(hljs) {
+import {HLJSApi} from 'highlight.js';
+
+export default function terminal(hljs: HLJSApi) {
   return {
     name: 'Linux Terminal',
     aliases: ['term'],
