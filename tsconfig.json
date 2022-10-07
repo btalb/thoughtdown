@@ -6,7 +6,10 @@
     "module": "CommonJs",
     "moduleResolution": "node",
     "noImplicitAny": true,
-    "outDir": "./dist/",
     "target": "es5",
-  }
+    "outDir": "./dist/"
+  },
+  "files": [
+    "src/index.ts"
+  ],
 }
