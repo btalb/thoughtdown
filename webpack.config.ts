@@ -26,9 +26,6 @@ const config: Configuration = {
       type: 'commonjs2',
     },
   },
-  experiments: {
-    outputModule: true,
-  },
 };
 
 export default config;

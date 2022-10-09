@@ -8,7 +8,7 @@
     "build": "webpack",
     "format": "prettier --write . && eslint --fix .",
     "start": "webpack --watch",
-    "test": "tsc --sourceMap tests/debug.ts && node --enable-source-maps tests/debug.js"
+    "test": "tsc --project tests/ && node --enable-source-maps tests/debug.js"
   },
   "repository": {
     "type": "git",
