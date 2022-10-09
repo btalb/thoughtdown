@@ -22,6 +22,12 @@ const config: Configuration = {
   },
   output: {
     filename: 'bundle.js',
+    library: {
+      type: 'commonjs2',
+    },
+  },
+  experiments: {
+    outputModule: true,
   },
 };
 

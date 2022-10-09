@@ -2,7 +2,7 @@ import {readFileSync} from 'fs';
 import {fileURLToPath} from 'url';
 
 import td from '../dist/bundle';
-console.log(td);
+console.log(td());
 
 // import prettier from 'prettier';
 
