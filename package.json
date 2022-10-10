@@ -7,6 +7,7 @@
   "scripts": {
     "build": "webpack",
     "format": "prettier --write . && eslint --fix .",
+    "prepare": "npm run build",
     "start": "webpack --watch",
     "test": "tsc --project tests/ && npm run test:run",
     "test:run": "TS_NODE_PROJECT=tests/tsconfig.json node -r tsconfig-paths/register tests/debug.js"
@@ -28,6 +29,9 @@
     "url": "https://github.com/btalb/thoughtdown/issues"
   },
   "homepage": "https://github.com/btalb/thoughtdown#readme",
+  "files": [
+    "./dist/*"
+  ],
   "devDependencies": {
     "@babel/cli": "^7.18.10",
     "@babel/core": "^7.18.10",
