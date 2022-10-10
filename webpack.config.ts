@@ -1,3 +1,5 @@
+// @ts-ignore
+import NpmDts from 'npm-dts-webpack-plugin';
 import {Configuration} from 'webpack';
 
 const config: Configuration = {
@@ -26,6 +28,7 @@ const config: Configuration = {
       type: 'commonjs2',
     },
   },
+  plugins: [new NpmDts({output: './dist/bundle.d.ts'})],
 };
 
 export default config;
