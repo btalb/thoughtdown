@@ -1,9 +1,16 @@
 {
   "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": ".",
     "esModuleInterop": true,
     "moduleResolution": "node",
+    "noEmit": true,
     "noImplicitAny": true,
-    "sourceMap": true
+    "paths": {
+      "thoughtdown": ["../src/index"],
+      "thoughtdown/*": ["../src/*"]
+    },
+    "sourceMap": true,
   },
   "files": [
     "./debug.ts"
