@@ -1,20 +1,18 @@
 import {readFileSync} from 'fs';
+import path from 'path';
+import prettier from 'prettier';
 import {fileURLToPath} from 'url';
 
-import a from 'thoughtdown';
-console.log(a);
+import td from 'thoughtdown';
 
-// // import prettier from 'prettier';
+const renderer = td();
 
-// import path from 'path';
+const input = readFileSync(path.resolve(__dirname, './debug.md'), {
+  encoding: 'utf8',
+});
+console.log(input);
 
-// const input = readFileSync(path.resolve(__dirname, './debug.md'), {
-//   encoding: 'utf8',
-// });
-// console.log(input);
+const out = `<body>${renderer.render(input)}</body>`;
 
-// const out = `<body>${td.render(input)}</body>`;
-
-// // console.log(`INPUT MARKDOWN\n\n${input}`);
-// // console.log(`RENDERED MARKDOWN:\n\n${prettier.format(out)}`);
-// // // console.log(`RENDERED MARKDOWN:\n\n${out}`);
+console.log(`INPUT MARKDOWN\n\n${input}`);
+console.log(`RENDERED MARKDOWN:\n\n${prettier.format(out, {parser: 'babel'})}`);
