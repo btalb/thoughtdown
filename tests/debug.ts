@@ -2,7 +2,7 @@ import {readFileSync} from 'fs';
 import {fileURLToPath} from 'url';
 
 import a from 'thoughtdown';
-console.log(a());
+console.log(a);
 
 // // import prettier from 'prettier';
 
