@@ -1,6 +1,6 @@
 {
   "name": "thoughtdown",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Transform thoughts into HTML (powered by Markdown)",
   "main": "./dist/bundle.js",
   "private": true,
