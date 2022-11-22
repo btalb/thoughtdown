@@ -10,7 +10,7 @@ function extractFenceOptions(info: string) {
   return options ? yaml.parse(options) : {};
 }
 
-export default function (options?: md.Options) {
+export default function (options?: md.Options): md {
   const m = md(options).use(require('markdown-it-highlightjs'), {
     register: languages,
   });
