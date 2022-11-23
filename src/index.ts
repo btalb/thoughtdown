@@ -2,7 +2,7 @@ import md from 'markdown-it';
 import yaml from 'yaml';
 
 import fences from './fences';
-import fenceOptions from './fence_options';
+import fenceOptions, {isFenceOption} from './fence_options';
 import languages from './languages';
 
 function extractFenceOptions(info: string) {
@@ -34,9 +34,7 @@ export default function (options?: md.Options): md {
 
     // Give fence options a chance to modify output before returning
     Object.entries(opts).forEach(([ok, ov]) => {
-      Object.entries(fenceOptions).forEach(([k, v]) => {
-        if (k === ok) out = v(out, ok, ov as string);
-      });
+      if (isFenceOption(ok)) out = fenceOptions[ok](out, ok, ov.toString());
     });
     return out;
   };

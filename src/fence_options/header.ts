@@ -28,9 +28,7 @@ export function button(output: string, option: string, optionValue?: string) {
   const v = optionValue ? optionValue : option;
   return addHeaderContent(
     output,
-    `<button class="td-${v}"><span>${
-      v in BUTTON_TEXT ? BUTTON_TEXT[v] : idToString(v)
-    }</span></button>`,
+    `<button class="td-${v}"><span></span></button>`,
     false
   );
 }
