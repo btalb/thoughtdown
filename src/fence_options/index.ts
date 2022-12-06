@@ -1,3 +1,5 @@
+import {HTMLElement} from 'node-html-parser';
+
 import {button, label} from './header';
 
 const out = {

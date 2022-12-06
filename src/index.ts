@@ -1,5 +1,6 @@
 import md from 'markdown-it';
 import yaml from 'yaml';
+import {parse} from 'node-html-parser';
 
 import fences from './fences';
 import fenceOptions, {isFenceOption} from './fence_options';
@@ -22,21 +23,20 @@ export default function (options?: md.Options): md {
       .replace(/^<code/, '<code class="hljs hljs-inline language-none"');
   };
   m.renderer.rules.fence = function (tokens, idx, options, env, slf) {
-    let out: string;
     const opts = extractFenceOptions(tokens[idx].info);
 
     // Use custom fences if available, otherwise fallback to default
     const fenceName = tokens[idx].info.match(/^[^{^ ]*/).toString();
-    out =
+    let out =
       fenceName in fences
-        ? fences[fenceName](tokens[idx].content, opts)
-        : rules_default.fence(tokens, idx, options, env, slf);
+        ? fences[fenceName](parse(tokens[idx].content), opts)
+        : parse(rules_default.fence(tokens, idx, options, env, slf));
 
     // Give fence options a chance to modify output before returning
     Object.entries(opts).forEach(([ok, ov]) => {
       if (isFenceOption(ok)) out = fenceOptions[ok](out, ok, ov.toString());
     });
-    return out;
+    return out.toString();
   };
 
   return m;
