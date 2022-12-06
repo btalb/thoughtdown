@@ -5,8 +5,6 @@ const HEADER_CLOSE = '</div>';
 const REGEX_BEGIN = new RegExp(`(${HEADER_OPEN})`);
 const REGEX_END = new RegExp(`(${HEADER_OPEN}.*?)(${HEADER_CLOSE}<code)`);
 
-const BUTTON_TEXT: {[key: string]: string} = {};
-
 function addHeader(output: string) {
   return output.includes(HEADER_OPEN)
     ? output

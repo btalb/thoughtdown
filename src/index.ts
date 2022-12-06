@@ -26,11 +26,11 @@ export default function (options?: md.Options): md {
     const opts = extractFenceOptions(tokens[idx].info);
 
     // Use custom fences if available, otherwise fallback to default
-    Object.entries(fences).forEach(([k, v]) => {
-      const fenceName = tokens[idx].info.match(/^[^{^ ]*/).toString();
-      if (fenceName === k) out = v(tokens[idx].content, opts);
-    });
-    if (!out) out = rules_default.fence(tokens, idx, options, env, slf);
+    const fenceName = tokens[idx].info.match(/^[^{^ ]*/).toString();
+    out =
+      fenceName in fences
+        ? fences[fenceName](tokens[idx].content, opts)
+        : rules_default.fence(tokens, idx, options, env, slf);
 
     // Give fence options a chance to modify output before returning
     Object.entries(opts).forEach(([ok, ov]) => {
