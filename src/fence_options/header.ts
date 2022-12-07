@@ -1,28 +1,20 @@
-import {HTMLElement} from 'node-html-parser';
-
 const CODE_OPEN = `<code class="hljs`;
 const CODE_CLOSE = `</code>`;
 
 const HEADER_CLASS = 'td-header';
-const HEADER_OPEN = `<div class="${HEADER_CLASS}`;
-const HEADER_CLOSE = '</div>';
-
-const REGEX_BEGIN = new RegExp(`(${HEADER_OPEN})`);
-const REGEX_END = new RegExp(`(${HEADER_OPEN}.*?)(${HEADER_CLOSE}<code)`);
+const HEADER_EMPTY = `<div class="${HEADER_CLASS}"></div>`;
 
 function addHeader(input: HTMLElement) {
+  if (input.querySelector(`.${HEADER_CLASS}`) === null)
+    input.querySelector('pre').insertAdjacentHTML('afterbegin', HEADER_EMPTY);
   return input;
-  // return output.includes(HEADER_OPEN)
-  //   ? output
-  //   : output.replace(/^(<pre>)/, `$1${HEADER_OPEN}${HEADER_CLOSE}`);
 }
 
 function addHeaderContent(input: HTMLElement, content: string, begin = true) {
+  addHeader(input)
+    .querySelector('.td-header')
+    .insertAdjacentHTML(begin ? 'afterbegin' : 'beforeend', content);
   return input;
-  // return addHeader(output).replace(
-  //   begin ? REGEX_BEGIN : REGEX_END,
-  //   `$1${content}${begin ? '' : '$2'}`
-  // );
 }
 
 function addToCode(output: string, content: string, begin = true) {}
