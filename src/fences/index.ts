@@ -1,11 +1,16 @@
+import caption from './captioned';
 // import gitgraph from './gitgraph';
 // import systemdiagram from './systemdiagram';
 
-// TODO these args are wrong. Name them, and get correct types
-const out: {[key: string]: (arg0: Element, arg1: string) => HTMLElement} = {};
+const out = {
+  captioned: caption,
+} as const;
+
+export type FenceType = keyof typeof out;
+export type FenceTypeFunction = typeof out[FenceType];
+
+export function isFenceType(name: string): name is FenceType {
+  return name in out;
+}
 
 export default out;
-// export default {
-//   gitgraph: gitgraph,
-//   systemdiagram: systemdiagram,
-// };

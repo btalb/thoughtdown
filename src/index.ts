@@ -3,13 +3,15 @@ import yaml from 'yaml';
 
 import {JSDOM} from 'jsdom';
 
-import fences from './fences';
+import {FenceOptions} from './interfaces';
+
+import fences, {isFenceType} from './fences';
 import fenceOptions, {isFenceOption} from './fence_options';
 import languages from './languages';
 
 function extractFenceOptions(info: string) {
   const options = info.replace(/^[^{]*/, '');
-  return options ? yaml.parse(options) : {};
+  return (options ? yaml.parse(options) : {}) as FenceOptions;
 }
 
 function stringToHtml(input: string) {
@@ -32,11 +34,12 @@ export default function (options?: md.Options): md {
     const opts = extractFenceOptions(tokens[idx].info);
 
     // Use custom fences if available, otherwise fallback to default
+    console.log(tokens[idx].content);
+    console.log(stringToHtml(tokens[idx].content));
     const fenceName = tokens[idx].info.match(/^[^{^ ]*/).toString();
-    let out =
-      fenceName in fences
-        ? fences[fenceName](stringToHtml(tokens[idx].content), opts)
-        : stringToHtml(rules_default.fence(tokens, idx, options, env, slf));
+    let out = isFenceType(fenceName)
+      ? fences[fenceName](stringToHtml(tokens[idx].content), opts, slf)
+      : stringToHtml(rules_default.fence(tokens, idx, options, env, slf));
 
     // // Give fence options a chance to modify output before returning
     Object.entries(opts).forEach(([ok, ov]) => {
