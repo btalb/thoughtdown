@@ -1,11 +1,18 @@
-import Renderer from 'markdown-it/lib/renderer';
+import MarkdownIt from 'markdown-it';
 import {FenceOptions} from '../interfaces';
 
 export default function caption(
-  input: Element,
+  input: string,
   options: FenceOptions,
-  renderer: Renderer
+  renderer: MarkdownIt
 ) {
-  console.log(input);
-  return input;
+  const caption = input.trim().split('\n').pop();
+  const content = renderer.render(input.replace(caption, '').trim());
+
+  const captionHTML = `<div class="td-caption">${caption}</div>`;
+  return `<div class="td-captioned">${
+    typeof options.begin !== 'undefined'
+      ? `${captionHTML}${content}`
+      : `${content}${captionHTML}`
+  }</div>`;
 }
