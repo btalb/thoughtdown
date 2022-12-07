@@ -34,12 +34,12 @@ export default function (options?: md.Options): md {
     const opts = extractFenceOptions(tokens[idx].info);
 
     // Use custom fences if available, otherwise fallback to default
-    console.log(tokens[idx].content);
-    console.log(stringToHtml(tokens[idx].content));
     const fenceName = tokens[idx].info.match(/^[^{^ ]*/).toString();
-    let out = isFenceType(fenceName)
-      ? fences[fenceName](stringToHtml(tokens[idx].content), opts, slf)
-      : stringToHtml(rules_default.fence(tokens, idx, options, env, slf));
+    let out = stringToHtml(
+      isFenceType(fenceName)
+        ? fences[fenceName](tokens[idx].content, opts, m)
+        : rules_default.fence(tokens, idx, options, env, slf)
+    );
 
     // // Give fence options a chance to modify output before returning
     Object.entries(opts).forEach(([ok, ov]) => {
