@@ -13,7 +13,8 @@ function extractFenceOptions(info: string) {
 }
 
 function stringToHtml(input: string) {
-  return new JSDOM(input).window.document.documentElement;
+  return new JSDOM(input).window.document.documentElement.querySelector('body')
+    .firstElementChild;
 }
 
 export default function (options?: md.Options): md {
