@@ -11,7 +11,7 @@ export default function caption(
 
   const captionHTML = `<div class="td-caption">${caption}</div>`;
   return `<div class="td-captioned">${
-    typeof options.begin !== 'undefined'
+    typeof options.before !== 'undefined'
       ? `${captionHTML}${content}`
       : `${content}${captionHTML}`
   }</div>`;
