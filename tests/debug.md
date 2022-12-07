@@ -1,14 +1,8 @@
-A troublesome code block:
+An image with a caption:
 
-```bash {filename: analyse_pdfs, button: copy}
-#!/usr/bin/env bash
-
-device="ink_cov"
-out="/tmp/pdf_trim/analysis.txt"
-
-find . -name '*.pdf' | while read p; do
-  gs -o - -sDEVICE="$device" "$p" | grep CMYK | grep -n '' | \
-    sed 's/:/ /; s|^|'$in' '$(echo "$p" | sed 's|^\./||')' |' | \
-    tee -a "$out"
-done
+```captioned
+![The alt text for my image](./debug.jpg)
+This is my caption
 ```
+
+Then some more text

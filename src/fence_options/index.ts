@@ -6,8 +6,8 @@ const out = {
   label: label,
 } as const;
 
-type FenceOption = keyof typeof out;
-type FenceFunction = typeof out[FenceOption];
+export type FenceOption = keyof typeof out;
+export type FenceOptionFunction = typeof out[FenceOption];
 
 export function isFenceOption(opt: string): opt is FenceOption {
   return opt in out;

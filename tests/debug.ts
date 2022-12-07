@@ -17,5 +17,5 @@ const out = `<body>${renderer.render(input)}</body>`;
 console.log(`INPUT MARKDOWN\n\n${input}`);
 console.log(`RENDERED MARKDOWN (RAW):\n\n${out}`);
 console.log(
-  `RENDERED MARKDOWN (FORMATTED):\n\n${prettier.format(out, {parser: 'babel'})}`
+  `RENDERED MARKDOWN (FORMATTED):\n\n${prettier.format(out, {parser: 'html'})}`
 );
