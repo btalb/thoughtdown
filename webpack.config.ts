@@ -21,6 +21,11 @@ const config: Configuration = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
+    fallback: {
+      bufferutil: false,
+      canvas: false,
+      'utf-8-validate': false,
+    },
   },
   output: {
     filename: 'bundle.js',
@@ -29,6 +34,7 @@ const config: Configuration = {
     },
   },
   plugins: [new NpmDts({output: './dist/bundle.d.ts'})],
+  target: 'node',
 };
 
 export default config;
