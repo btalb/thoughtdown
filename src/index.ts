@@ -1,6 +1,7 @@
 import md from 'markdown-it';
 import yaml from 'yaml';
-import {parse} from 'node-html-parser';
+
+import {JSDOM} from 'jsdom';
 
 import fences from './fences';
 import fenceOptions, {isFenceOption} from './fence_options';
@@ -9,6 +10,10 @@ import languages from './languages';
 function extractFenceOptions(info: string) {
   const options = info.replace(/^[^{]*/, '');
   return options ? yaml.parse(options) : {};
+}
+
+function stringToHtml(input: string) {
+  return new JSDOM(input).window.document.documentElement;
 }
 
 export default function (options?: md.Options): md {
@@ -29,14 +34,14 @@ export default function (options?: md.Options): md {
     const fenceName = tokens[idx].info.match(/^[^{^ ]*/).toString();
     let out =
       fenceName in fences
-        ? fences[fenceName](parse(tokens[idx].content), opts)
-        : parse(rules_default.fence(tokens, idx, options, env, slf));
+        ? fences[fenceName](stringToHtml(tokens[idx].content), opts)
+        : stringToHtml(rules_default.fence(tokens, idx, options, env, slf));
 
-    // Give fence options a chance to modify output before returning
+    // // Give fence options a chance to modify output before returning
     Object.entries(opts).forEach(([ok, ov]) => {
       if (isFenceOption(ok)) out = fenceOptions[ok](out, ok, ov.toString());
     });
-    return out.toString();
+    return out.outerHTML;
   };
 
   return m;

@@ -1,5 +1,3 @@
-import {HTMLElement} from 'node-html-parser';
-
 // import gitgraph from './gitgraph';
 // import systemdiagram from './systemdiagram';
 
