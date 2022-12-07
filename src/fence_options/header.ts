@@ -17,7 +17,12 @@ function addHeaderContent(input: Element, content: string, begin = true) {
   return input;
 }
 
-function addToCode(input: Element, content: string, begin = true) {}
+function addToCode(input: Element, content: string, begin = true) {
+  input
+    .querySelector('code')
+    .insertAdjacentHTML(begin ? 'afterbegin' : 'beforeend', content);
+  return input;
+}
 
 function idToString(id: string) {
   return id.replace(/(^[a-z])/, m => m.toUpperCase()).replace(/-/g, ' ');
@@ -33,8 +38,5 @@ export function button(input: Element, option: string, optionValue?: string) {
 }
 
 export function label(input: Element, option: string, optionValue?: string) {
-  return addHeaderContent(
-    input,
-    `<span class="td-${option}">${optionValue}</span>`
-  );
+  return addToCode(input, `<span class="td-${option}">${optionValue}</span>`);
 }
