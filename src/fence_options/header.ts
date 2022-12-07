@@ -1,43 +1,42 @@
+const CODE_OPEN = `<code class="hljs`;
+const CODE_CLOSE = `</code>`;
+
 const HEADER_CLASS = 'td-header';
-const HEADER_OPEN = `<div class="${HEADER_CLASS}">`;
-const HEADER_CLOSE = '</div>';
+const HEADER_EMPTY = `<div class="${HEADER_CLASS}"></div>`;
 
-const REGEX_BEGIN = new RegExp(`(${HEADER_OPEN})`);
-const REGEX_END = new RegExp(`(${HEADER_OPEN}.*?)(${HEADER_CLOSE}<code)`);
-
-const BUTTON_TEXT: {[key: string]: string} = {};
-
-function addHeader(output: string) {
-  return output.includes(HEADER_OPEN)
-    ? output
-    : output.replace(/^(<pre>)/, `$1${HEADER_OPEN}${HEADER_CLOSE}`);
+function addHeader(input: Element) {
+  if (input.querySelector(`.${HEADER_CLASS}`) === null)
+    input.insertAdjacentHTML('afterbegin', HEADER_EMPTY);
+  return input;
 }
 
-function addHeaderContent(output: string, content: string, begin = true) {
-  return addHeader(output).replace(
-    begin ? REGEX_BEGIN : REGEX_END,
-    `$1${content}${begin ? '' : '$2'}`
-  );
+function addHeaderContent(input: Element, content: string, begin = true) {
+  addHeader(input)
+    .querySelector('.td-header')
+    .insertAdjacentHTML(begin ? 'afterbegin' : 'beforeend', content);
+  return input;
+}
+
+function addToCode(input: Element, content: string, begin = true) {
+  input
+    .querySelector('code')
+    .insertAdjacentHTML(begin ? 'afterbegin' : 'beforeend', content);
+  return input;
 }
 
 function idToString(id: string) {
   return id.replace(/(^[a-z])/, m => m.toUpperCase()).replace(/-/g, ' ');
 }
 
-export function button(output: string, option: string, optionValue?: string) {
+export function button(input: Element, option: string, optionValue?: string) {
   const v = optionValue ? optionValue : option;
   return addHeaderContent(
-    output,
-    `<button class="td-${v}"><span>${
-      v in BUTTON_TEXT ? BUTTON_TEXT[v] : idToString(v)
-    }</span></button>`,
+    input,
+    `<button class="td-${v}"><span></span></button>`,
     false
   );
 }
 
-export function label(output: string, option: string, optionValue?: string) {
-  return addHeaderContent(
-    output,
-    `<span class="td-${option}">${optionValue}</span>`
-  );
+export function label(input: Element, option: string, optionValue?: string) {
+  return addToCode(input, `<span class="td-${option}">${optionValue}</span>`);
 }
